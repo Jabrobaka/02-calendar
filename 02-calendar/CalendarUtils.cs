@@ -1,4 +1,6 @@
-﻿namespace _02_calendar
+﻿using System;
+
+namespace _02_calendar
 {
     public class CalendarUtils
     {
@@ -16,6 +18,13 @@
             October,
             November,
             December
+        }
+
+        public static string GetMonthNameByNumber(int monthNumber)
+        {
+            if (monthNumber >= 1 && monthNumber <= 12)
+                return ((Months) monthNumber).ToString();
+            throw new ArgumentOutOfRangeException("Month number number is invalid");
         }
     }
 }
