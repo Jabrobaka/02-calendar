@@ -28,7 +28,7 @@ namespace _02_calendar
             }
 
             var drawer = new CalendarDrawer(date);
-            Image calendarImage = drawer.DrawCurrentDate();
+            Image calendarImage = drawer.DrawCurrentMonth();
             calendarImage.Save("result.bmp");
         }
     }
