@@ -1,15 +1,21 @@
-﻿public enum Months
+﻿namespace _02_calendar
 {
-    January = 1,
-    February,
-    March,
-    April,
-    May,
-    June,
-    July,
-    August,
-    September,
-    October,
-    November,
-    December
+    public class CalendarUtils
+    {
+        public enum Months
+        {
+            January = 1,
+            February,
+            March,
+            April,
+            May,
+            June,
+            July,
+            August,
+            September,
+            October,
+            November,
+            December
+        }
+    }
 }
