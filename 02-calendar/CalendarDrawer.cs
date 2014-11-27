@@ -12,13 +12,7 @@ namespace _02_calendar
         private Graphics graphics;
         private Font font;
         private StringFormat stringFormat;
-
         private int imageSize;
-        private float startX;
-        private float startY;
-
-        private float currentX;
-        private float currentY;
         private CalendarDrawingPlacer calendarPlacer;
 
         public Color MonthNameColor { get; set; } 
