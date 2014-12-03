@@ -31,38 +31,66 @@ namespace _02_calendar
             MonthNameColor = Color.DarkCyan;
             DayColor = Color.DarkSlateGray;
             HolidayColor = Color.DarkRed;
+            CurrentDayColor = Color.Lime;
         }
 
         public Image DrawCurrentMonth()
         {
             var image = new Bitmap(imageSize, imageSize);
-            graphics = Graphics.FromImage(image);
-            graphics.Clear(Color.FloralWhite);
+            using (graphics = Graphics.FromImage(image))
+            {
+                graphics.Clear(Color.FloralWhite);
 
-            DrawMonthName();
-            DrawDaysOfWeek();
-            DrawDaysNumbers();
+                DrawHeader();
+                DrawDays();
+            }         
 
             return image;
         }
 
-        private void DrawMonthName()
+        private void DrawHeader()
         {
-            var monthName = CalendarUtils.GetMonthNameByNumber(date.Month);
-            
+            var monthName = date.Month.GetMonthNameByNumber();
+            var currentYear = date.Year;
+            var header = string.Format("{0}, {1}", monthName, currentYear);
+
             using (var brush = new SolidBrush(MonthNameColor))
             {
-                var drawingPoint = calendarPlacer.GetMonthNamePlace();
-                graphics.DrawString(monthName, font, brush, drawingPoint, stringFormat);
+                var drawingPoint = calendarPlacer.GetHeaderPlace();
+                graphics.DrawString(header, font, brush, drawingPoint, stringFormat);
             }
         }
 
-        private void DrawDaysOfWeek()
+        private void DrawDays()
+        {
+            var daysOfWeek = DrawDaysOfWeek();
+            var daysNumbers = DrawDaysNumbers();
+            DrawInCalendarGrid(daysOfWeek.Concat(daysNumbers));
+        }
+     
+        private IEnumerable<string> DrawDaysNumbers()
+        {
+            var fistDayOfMonth = date.GetFirstDayOfWeekInCurrentMonth();
+            var skipDays = (int)fistDayOfMonth - 1;
+            var daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
+            var dataToDraw = new List<string>();
+            for (int i = 0; i < skipDays; i++)
+            {
+                dataToDraw.Add("");
+            }
+            for (int i = 1; i <= daysInMonth; i++)
+            {
+                dataToDraw.Add(i.ToString());
+            }
+            return dataToDraw;
+        }
+
+        private IEnumerable<string> DrawDaysOfWeek()
         {
             var daysOfWeek = CalendarUtils.GetDaysOfWeek()
                 .Select(day => string.Concat(day.Take(3)));
 
-            DrawInCalendarGrid(daysOfWeek);
+            return daysOfWeek;
         }
 
         private void DrawInCalendarGrid(IEnumerable<string> toDraw)
@@ -80,38 +108,17 @@ namespace _02_calendar
                     {
                         graphics.FillEllipse(currentDayBrush, drawingRectangle);
                     }
-                    var brush = IsHoliday(i) ? holidayBrush : normalBrush; 
+                    var brush = i.IsHoliday() ? holidayBrush : normalBrush;
+//                    graphics.DrawRectangle(new Pen(Color.Red), new Rectangle((int)drawingRectangle.X, (int)drawingRectangle.Y, (int)drawingRectangle.Width, (int)drawingRectangle.Height));
                     graphics.DrawString(days[i], font, brush, drawingRectangle, stringFormat);
                 }
             }
         }
 
-        private bool IsHoliday(int i)
-        {
-            return CalendarUtils.Holidays.Contains(i+1);
-        }
+        
 
-        private void DrawDaysNumbers()
-        {
-            var fistDayOfMonth = GetFirstDayOfWeekInCurrentMonth();
-            var skipDays = (int)fistDayOfMonth - 1;
-            var daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
-            var dataToDraw = new List<string>();
-            for (int i = 0; i < skipDays; i++)
-            {
-                dataToDraw.Add("");
-            }
-            for (int i = 1; i <= daysInMonth; i++)
-            {
-                dataToDraw.Add(i.ToString());
-            }
-            DrawInCalendarGrid(dataToDraw);
-        }
+        
 
-        private CalendarUtils.DaysOfWeek GetFirstDayOfWeekInCurrentMonth()
-        {
-            var newDate = new DateTime(date.Year, date.Month, 1);
-            return (CalendarUtils.DaysOfWeek) newDate.DayOfWeek;
-        }
+        
     }
 }

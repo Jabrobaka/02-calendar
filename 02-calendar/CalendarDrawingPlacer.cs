@@ -23,12 +23,12 @@ namespace _02_calendar
             side = calendarSquareSide;
             currentX = startX = side * 0.05f;
             currentY = startY = side * 0.15f;
-            rectangleWidth = (side - startX * 2) / 7;
+            rectangleWidth = (side - (startX+side*0.01f) * 2) / 7;
             rectangleHeight = side * 0.05f;
             lineSpace = side * 0.09f;
         }
 
-        public PointF GetMonthNamePlace()
+        public PointF GetHeaderPlace()
         {
             var x = side * 0.5f;
             var y = side * 0.05f;
