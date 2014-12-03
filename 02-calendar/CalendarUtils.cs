@@ -72,10 +72,12 @@ namespace _02_calendar
             return Holidays.Contains(i + 1);
         }
 
-        public static CalendarUtils.DaysOfWeek GetFirstDayOfWeekInCurrentMonth(this DateTime date)
+        public static DaysOfWeek GetFirstDayOfWeekInCurrentMonth(this DateTime date)
         {
             var newDate = new DateTime(date.Year, date.Month, 1);
-            return (DaysOfWeek)newDate.DayOfWeek;
+            var dayOfWeekNumber = (int)newDate.DayOfWeek;
+            var dayOfWeek = dayOfWeekNumber == 0 ? 7 : dayOfWeekNumber;
+            return (DaysOfWeek)dayOfWeek;
         }
     }
 }

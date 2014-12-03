@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace _02_calendar
 {
-    class CalendarDrawer 
+    internal class CalendarDrawer
     {
         private DateTime date;
         private Graphics graphics;
@@ -15,7 +16,7 @@ namespace _02_calendar
         private int imageSize;
         private CalendarDrawingPlacer calendarPlacer;
 
-        public Color MonthNameColor { get; set; } 
+        public Color MonthNameColor { get; set; }
         public Color DayColor { get; set; }
         public Color CurrentDayColor { get; set; }
         public Color HolidayColor { get; set; }
@@ -24,7 +25,7 @@ namespace _02_calendar
         {
             this.date = date;
             font = new Font("Arial", 14);
-            stringFormat = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center };
+            stringFormat = new StringFormat {Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center};
             calendarPlacer = new CalendarDrawingPlacer(calendarSize);
             imageSize = calendarSize;
 
@@ -43,7 +44,7 @@ namespace _02_calendar
 
                 DrawHeader();
                 DrawDays();
-            }         
+            }
 
             return image;
         }
@@ -63,15 +64,15 @@ namespace _02_calendar
 
         private void DrawDays()
         {
-            var daysOfWeek = DrawDaysOfWeek();
-            var daysNumbers = DrawDaysNumbers();
+            var daysOfWeek = GetDaysOfWeek();
+            var daysNumbers = GetDaysNumbers();
             DrawInCalendarGrid(daysOfWeek.Concat(daysNumbers));
         }
-     
-        private IEnumerable<string> DrawDaysNumbers()
+
+        private IEnumerable<string> GetDaysNumbers()
         {
             var fistDayOfMonth = date.GetFirstDayOfWeekInCurrentMonth();
-            var skipDays = (int)fistDayOfMonth - 1;
+            var skipDays = (int) fistDayOfMonth - 1;
             var daysInMonth = DateTime.DaysInMonth(date.Year, date.Month);
             var dataToDraw = new List<string>();
             for (int i = 0; i < skipDays; i++)
@@ -85,7 +86,7 @@ namespace _02_calendar
             return dataToDraw;
         }
 
-        private IEnumerable<string> DrawDaysOfWeek()
+        private IEnumerable<string> GetDaysOfWeek()
         {
             var daysOfWeek = CalendarUtils.GetDaysOfWeek()
                 .Select(day => string.Concat(day.Take(3)));
@@ -95,8 +96,9 @@ namespace _02_calendar
 
         private void DrawInCalendarGrid(IEnumerable<string> toDraw)
         {
-            var days = toDraw.ToArray();
-        
+            var days = toDraw.ToList();
+            var currentDay = GetCurrentDayIndex(toDraw);
+
             using (var normalBrush = new SolidBrush(DayColor))
             using (var currentDayBrush = new SolidBrush(CurrentDayColor))
             using (var holidayBrush = new SolidBrush(HolidayColor))
@@ -104,7 +106,7 @@ namespace _02_calendar
                 for (int i = 0; i < days.Count(); i++)
                 {
                     var drawingRectangle = calendarPlacer.NextDatePlace();
-                    if (i == date.Day)
+                    if (i == currentDay)
                     {
                         graphics.FillEllipse(currentDayBrush, drawingRectangle);
                     }
@@ -114,10 +116,9 @@ namespace _02_calendar
             }
         }
 
-        
-
-        
-
-        
+        private int GetCurrentDayIndex(IEnumerable<string> toDraw)
+        {
+            return toDraw.TakeWhile(s => !date.Day.ToString().Equals(s)).Count();
+        }
     }
 }
