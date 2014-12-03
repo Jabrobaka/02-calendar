@@ -109,7 +109,6 @@ namespace _02_calendar
                         graphics.FillEllipse(currentDayBrush, drawingRectangle);
                     }
                     var brush = i.IsHoliday() ? holidayBrush : normalBrush;
-//                    graphics.DrawRectangle(new Pen(Color.Red), new Rectangle((int)drawingRectangle.X, (int)drawingRectangle.Y, (int)drawingRectangle.Width, (int)drawingRectangle.Height));
                     graphics.DrawString(days[i], font, brush, drawingRectangle, stringFormat);
                 }
             }
