@@ -6,7 +6,7 @@ namespace _02_calendar
 {
     public static class CalendarUtils
     {
-        private static IEnumerable<int> holidays = new[] { 7, 6, 14, 13, 21, 20, 28, 27, 35, 34 };
+        private static IEnumerable<int> holidays = new[] { 7, 6, 14, 13, 21, 20, 28, 27, 35, 34, 42, 41 };
 
         public static IEnumerable<int> Holidays
         {
